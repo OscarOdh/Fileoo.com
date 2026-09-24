@@ -139,13 +139,15 @@ on first load.
 > `USE your_db_name;`, or run them through a client that's already pointed at
 > the right database.
 
-### 3. Create the `.env` file
+### 3. Fill in the `.env` file
 
-This goes **one directory above** the app folder, outside the web root, so no
-HTTP request can ever reach it. `config.php` looks at `../.env` first and falls
-back to a local `./.env` if you're developing on your own machine.
+`.env` ships with the repo, with every value set to `YYYY`. Replace those with
+your own. The app dies with a 500 on startup if any required one is left blank.
 
-This file holds every secret the app has. Keep it out of version control.
+For production, move it **one directory above** the app folder so it sits outside
+the web root and no HTTP request can reach it. `config.php` checks `../.env`
+first and falls back to `./.env`, which is what makes it work in place while
+you're developing locally.
 
 ```ini
 # Required. The app dies with a 500 if any of these are missing.
