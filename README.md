@@ -6,6 +6,10 @@ Upload files, keep them behind a login, and hand out links that expire, cap thei
 own download count, and can require a passcode. Runs on ordinary shared PHP
 hosting. No framework, no Composer, no build step.
 
+![The FILEOO dashboard in the Dark theme: a drag-and-drop upload card, a ring
+gauge showing storage used, and the file list with per-file download, link and
+share actions.](https://fileoo.com/fileoo.png)
+
 ---
 
 ## What problem does this solve?
