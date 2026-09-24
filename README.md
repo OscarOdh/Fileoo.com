@@ -1,4 +1,4 @@
-# FILEOO
+# Fileoo.com
 
 **A self-hosted file locker with real sharing controls**
 
