@@ -1,0 +1,67 @@
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81___lsphp .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+
+# 1. Disable directory listing for subfolders (e.g. css/, images/, js/)
+Options -Indexes
+
+# 2. Deny public HTTP access to sensitive environment configuration and server files
+<FilesMatch "^\.env|^\.git|^\.htaccess|^composer\.json|^package\.json">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 3. Add security headers (if Apache headers module is enabled)
+<IfModule mod_headers.c>
+    # Prevent Clickjacking (framing restrictions)
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Block MIME-type sniffing
+    Header set X-Content-Type-Options "nosniff"
+
+    # Deprecated header; explicitly disabled in favor of CSP below
+    Header set X-XSS-Protection "0"
+
+    # Limit referrer leakage
+    Header set Referrer-Policy "same-origin"
+
+    # Content-Security-Policy:
+    # - scripts only from this site + Cloudflare Turnstile (no inline scripts)
+    # - Turnstile renders in an iframe from challenges.cloudflare.com
+    # - 'unsafe-inline' for styles only (inline style="" attributes in markup)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://upload.fileoo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://upload.fileoo.com; frame-ancestors 'self'"
+</IfModule>
+
+# 4. Aggressive caching for static assets (CDN + browser).
+#    CSS/JS are always requested with a ?v=<filemtime> cache-buster, so a new
+#    file gets a new URL — they can be cached "forever" and never revalidated.
+#    Images are referenced without a version, so they get a shorter TTL; rename
+#    an image (or the folder) if you ever need to force-refresh one.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(png|jpg|jpeg|gif|webp|bmp|ico)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+</IfModule>
+
+# Fallback for hosts using mod_expires instead of/along with mod_headers.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/gif "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+</IfModule>
