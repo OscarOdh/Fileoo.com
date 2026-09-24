@@ -8,7 +8,7 @@ hosting. No framework, no Composer, no build step.
 
 ![The FILEOO dashboard in the Dark theme: a drag-and-drop upload card, a ring
 gauge showing storage used, and the file list with per-file download, link and
-share actions.](https://fileoo.com/fileoo.png)
+share actions.](docs/fileoo.png)
 
 ---
 
