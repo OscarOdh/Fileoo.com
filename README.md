@@ -113,41 +113,56 @@ Node, no Composer.
 
 ## Deploying it
 
-### 1. Get the files onto the server
+**Copy the folder structure as-is.** The repo is already laid out the way the
+server needs it, and that layout is the security model: only `fileoo.com/` is
+web-accessible, and your secrets and uploaded files sit one level above it where
+no HTTP request can reach them.
 
-```bash
-git clone https://github.com/OscarOdh/fileoo.com.git
+```
+your-hosting-account/
+├── .env                  ← your settings. NOT web-accessible.
+├── fileoo_uploads/       ← uploaded files land here. NOT web-accessible.
+└── public_html/          ← everything inside fileoo.com/ goes here
+    ├── index.php
+    ├── config.php
+    ├── .htaccess
+    └── ...
 ```
 
-Upload the contents to your web root (`public_html`, `www`, or a subdirectory).
+Your web root might be called `public_html`, `www`, or `htdocs` depending on the
+host. That folder gets the **contents of `fileoo.com/`**, not the folder itself.
+`.env` and `fileoo_uploads/` go in its parent.
 
-### 2. Create the database tables
+### 1. Upload
 
-Run the six files in `SQL/` against your database, in this order, because they
-have foreign keys between them:
+Drop the contents of `fileoo.com/` into your web root, then put `.env` and
+`fileoo_uploads/` one level above it.
+
+Check that `.htaccess` and `.user.ini` made it across. FTP clients and file
+managers hide dot-files by default, and missing them is the single most common
+way this deploy goes wrong: you lose the security headers and your upload limit
+silently drops to a couple of megabytes.
+
+### 2. Create the database
+
+Make an empty MySQL database, then run the files in `SQL/` in this order, since
+they have foreign keys between them:
 
 ```
 users.sql  →  user_files.sql  →  file_shares.sql  →  share_links.sql  →  password_resets.sql
 ```
 
-`login_attempts.sql` is included for reference but you don't need to run it.
-`config.php` creates that table automatically with `CREATE TABLE IF NOT EXISTS`
-on first load.
+In phpMyAdmin: select your database first, then Import, one file at a time.
 
-> **Note:** the schema files use unqualified table names, so they build into
-> whichever database your connection is already using. Pick it first with
-> `USE your_db_name;`, or run them through a client that's already pointed at
-> the right database.
+Skip `login_attempts.sql`. The app creates that table itself on first load. And
+the schema files use unqualified table names, so they build into whichever
+database you already have selected.
 
-### 3. Fill in the `.env` file
+### 3. Fill in `.env`
 
-`.env` ships with the repo, with every value set to `YYYY`. Replace those with
-your own. The app dies with a 500 on startup if any required one is left blank.
-
-For production, move it **one directory above** the app folder so it sits outside
-the web root and no HTTP request can reach it. `config.php` checks `../.env`
-first and falls back to `./.env`, which is what makes it work in place while
-you're developing locally.
+Every value ships as `YYYY`. Replace them with your own. The app returns a 500 on
+startup if any required one is still blank, so you can't half-configure it by
+accident.
 
 ```ini
 # Required. The app dies with a 500 if any of these are missing.
@@ -176,38 +191,43 @@ SMTP_PASSWORD=...
 SMTP_FROM_EMAIL=help@yourdomain.com
 ```
 
-### 4. Let it create the upload directory
+### 4. Open the site
 
-On first request, `config.php` creates `UPLOAD_DIR` if it's missing, drops a
-`.htaccess` containing `Require all denied` inside it, and creates a `thumbs/`
-subfolder. You don't need to do anything, but do verify afterwards that
-requesting a file in that directory over HTTP returns 403.
+Register the first account and you're running. There's no admin panel and no
+setup wizard, so the first account is just an account. To give someone more
+space, edit `users.quota_mb` for their row.
 
-### 5. Check the PHP limits
+---
 
-`.user.ini` sets `upload_max_filesize` and `post_max_size` to `150M`, matching
-`MAX_FILE_SIZE` in `config.php`. If your host ignores `.user.ini`, set them in
-the cPanel MultiPHP INI Editor instead. **These three values must agree.** If
-PHP's limit is lower than the app's, large uploads fail with a confusing error
-before any of the app's own code runs.
+### If something's wrong
 
-`php.ini` ships with a placeholder `error_log` path. Point it at a real writable
-location, or errors go nowhere and debugging a failed deploy gets much harder.
+**Blank page, or "Server configuration error".** A required value in `.env` is
+still `YYYY`, or the file isn't where `config.php` can see it. It checks
+`../.env` first, then `./.env`.
 
-### 6. Done
+**Uploads fail above a few MB.** Your host ignored `.user.ini`. Set
+`upload_max_filesize` and `post_max_size` to `150M` in the cPanel MultiPHP INI
+Editor instead. These must match `MAX_FILE_SIZE` in `config.php`, which is also
+150 MB. If PHP's limit is the lower one, uploads die before any of the app's own
+code runs.
 
-Visit the site, click `[ REQUEST_CREDS ]`, and register the first account.
-There's no admin panel and no first-run wizard, so the first account is just an
-account. Quotas are adjusted by editing `users.quota_mb` directly.
+**Errors vanish instead of logging.** `php.ini` ships with a placeholder
+`error_log` path. Point it somewhere writable.
 
-### Optional: the upload subdomain
+**Registration won't submit.** The Turnstile keys are wrong. Both the site key
+and the secret key are required, and they must be from the same Turnstile widget.
+
+**No password reset emails.** The `SMTP_*` values are optional, and resets fail
+silently without them. Check your error log for `[fileoo]` lines.
+
+### Optional: a separate upload subdomain
 
 Production runs uploads and downloads through `upload.fileoo.com`, a second
-domain pointed at the same files. It exists to keep large uploads off the main
-hostname. `config.php` detects that host and emits the CORS headers for it, and
-the session cookie domain is set to `.fileoo.com` so a login is shared across
-both. If you skip this, `UPLOAD_BASE_URL` stays empty and everything runs on one
-host, which is the simpler setup and works fine.
+domain pointed at the same files, to keep large uploads off the main hostname.
+`config.php` detects that host and emits the CORS headers for it, and the session
+cookie domain is set so a login is shared across both.
+
+Skip it and everything runs on one host, which is simpler and works fine.
 
 ### A note on the deployed layout
 
