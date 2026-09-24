@@ -143,6 +143,16 @@ managers hide dot-files by default, and missing them is the single most common
 way this deploy goes wrong: you lose the security headers and your upload limit
 silently drops to a couple of megabytes.
 
+Then open `php.ini` and point the log at a real writable path:
+
+```ini
+error_log = "/path/to/php.error.log"        ← change this
+```
+
+On cPanel that's usually `/home/youraccount/logs/php.error.log`. Leave the
+placeholder in and PHP errors go nowhere, which makes every problem below much
+harder to diagnose.
+
 ### 2. Create the database
 
 Make an empty MySQL database, then run the files in `SQL/` in this order, since
