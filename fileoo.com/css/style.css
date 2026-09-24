@@ -1,0 +1,182 @@
+/* fileoo.com/style.css
+   Shared stylesheet for the LOGIN and REGISTER pages.
+   Matches the "Dark" dashboard theme: charcoal base + IDE-blue accent,
+   system UI font, subtle borders and premium dark shadows. No animated
+   background — these pages are intentionally calm and static. */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #121212; /* Deep charcoal base */
+    color: #e0e0e0;            /* Soft readable white */
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* === AUTH CARD === */
+.auth-wrapper {
+    background-color: #1e1e1e; /* Sleek card background */
+    padding: 32px 40px;
+    border-radius: 8px;
+    border: 1px solid #333333; /* Subtle border */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    max-width: 460px;
+    width: 100%;
+    margin: auto;
+}
+
+.auth-wrapper h2 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #333333;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+/* === FORM FIELDS === */
+.auth-form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #aaaaaa;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-input { /* input[type="text" | "password" | "email"] */
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    background-color: #252526; /* Dark field background */
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: 1em;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-input::placeholder { color: #6b6b6b; }
+
+.auth-input:focus {
+    outline: none;
+    border-color: #007acc; /* IDE blue accent */
+    box-shadow: 0 0 5px rgba(0, 122, 204, 0.4);
+}
+
+.form-field-error {
+    color: #ff8888;
+    font-size: 0.85em;
+    margin-top: 6px;
+    display: block;
+}
+
+/* === SUBMIT BUTTON === */
+.auth-submit-button {
+    background: #007acc; /* IDE blue */
+    color: #ffffff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    width: 100%;
+    font-family: inherit;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0, 122, 204, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.auth-submit-button:hover,
+.auth-submit-button:focus {
+    background: #008be5;
+    box-shadow: 0 6px 15px rgba(0, 122, 204, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    outline: none;
+}
+
+.auth-submit-button:active {
+    transform: scale(0.98);
+}
+
+/* === SECONDARY LINK (Login <-> Register) === */
+.auth-link-container {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 0.9em;
+    color: #888888;
+}
+
+.auth-link-container a {
+    color: #cccccc;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.auth-link-container a:hover {
+    color: #007acc;
+}
+
+/* === LOGIN: overall error banner === */
+.login-overall-error {
+    color: #ff8888;
+    background-color: #3c1e1e;
+    border: 1px solid #883a3a;
+    border-left: 4px solid #883a3a;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+/* === REGISTER: feedback banner (success / error) === */
+.registration-feedback {
+    font-size: 0.95em;
+    text-align: center;
+    margin-bottom: 22px;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid;      /* colour set by .success / .error */
+    border-left-width: 4px;
+}
+
+.registration-feedback.success {
+    color: #7ae57a;
+    border-color: #3a7a3a;
+    background-color: #1b2e1b;
+}
+
+.registration-feedback.error {
+    color: #ff8888;
+    border-color: #883a3a;
+    background-color: #3c1e1e;
+}
+
+.registration-feedback a {
+    color: #4aa3e0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.registration-feedback a:hover {
+    color: #008be5;
+    text-decoration: underline;
+}

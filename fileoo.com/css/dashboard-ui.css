@@ -1,0 +1,908 @@
+/* fileoo.com/css/dashboard-ui.css
+   Styling for the dashboard enhancements (sortable headers, live search,
+   multi-select delete, image preview). Loaded AFTER the active theme so it can
+   layer on top. Kept theme-neutral: text colours inherit from the theme, and
+   floating popups use a dark "tooltip" look that reads on every theme. */
+
+[hidden] { display: none !important; }
+
+/* Fixed accent used only for active-state hints (reads on dark and light). */
+:root { --ui-accent: #4aa3e0; --ui-danger: #d9534f; --ui-danger-hover: #c9302c; }
+
+/* Theme-tunable tokens for the storage meter + link manager. Each theme file
+   overrides these in :root; the fallbacks here keep things readable if a theme
+   forgets one. :where() gives this block ZERO specificity so the theme's :root
+   values always win even though this file loads after the theme. */
+:where(:root) {
+    --fl-accent: #4aa3e0;
+    --fl-accent-contrast: #05121a;
+    --fl-track: rgba(128, 128, 128, 0.18);
+    --fl-muted: #8a97a3;
+    --fl-strong: #ffffff;
+    --fl-chip-bg: rgba(128, 128, 128, 0.14);
+    --fl-chip-border: rgba(128, 128, 128, 0.30);
+    --fl-input-bg: rgba(0, 0, 0, 0.35);
+    --fl-input-border: rgba(128, 128, 128, 0.40);
+    --fl-popup-bg: #1f1f23;
+    --fl-popup-border: #3a3a40;
+    --fl-popup-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ===================== Dashboard top row (upload + storage) ===================== */
+.dashboard-top {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* upload 75% / storage 25% */
+    gap: 20px;
+    margin-bottom: 28px;
+    align-items: stretch;
+}
+.dashboard-top .form-wrapper { margin-bottom: 0; }
+
+/* Upload card: center the dropzone contents around the cloud icon. */
+.upload-card > form { display: flex; flex-direction: column; height: 100%; }
+.upload-dropzone {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 14px 6px 18px;
+}
+.upload-dropzone .file-select-input {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.upload-cloud {
+    color: var(--fl-accent);
+    filter: drop-shadow(0 0 8px var(--fl-accent));
+    margin-bottom: 2px;
+}
+.upload-choose-label { margin: 0 !important; }
+.upload-dropzone .file-select-name { display: block; }
+
+/* ===================== Storage meter card ===================== */
+/* Desktop: narrow 25% column — gauge stacked above the numbers. */
+.storage-card { display: flex; align-items: center; justify-content: center; }
+.storage-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 6px 0;
+}
+.storage-gauge {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+}
+.storage-gauge .gauge-svg { width: 100%; height: 100%; display: block; }
+.storage-gauge .gauge-track { stroke: var(--fl-track); }
+.storage-gauge .gauge-value {
+    stroke: var(--fl-accent);
+    filter: drop-shadow(0 0 4px var(--fl-accent));
+}
+.storage-gauge .gauge-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--fl-strong);
+    letter-spacing: -0.5px;
+}
+.storage-info { text-align: center; }
+.storage-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--fl-strong);
+    line-height: 1.1;
+}
+.storage-numbers { margin-top: 4px; font-size: 0.95em; color: var(--fl-muted); }
+.storage-numbers strong { color: var(--fl-strong); font-weight: 700; }
+.storage-numbers .storage-quota { color: var(--fl-muted); }
+/* Slim usage bar — hidden on desktop (the ring gauge covers it). */
+.storage-line-bar { display: none; }
+
+/* ===================== Public links modal ===================== */
+.link-create-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+}
+.link-create-grid .form-group:last-child { grid-column: 1 / -1; }
+.link-create-grid .form-group { margin-bottom: 0 !important; }
+
+.link-create-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 11px 18px;
+    background: var(--fl-accent);
+    color: var(--fl-accent-contrast);
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--fl-accent) 35%, transparent);
+}
+.link-create-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.link-create-btn:disabled { opacity: 0.6; cursor: default; transform: none; filter: none; }
+
+.link-list { display: flex; flex-direction: column; gap: 10px; }
+.link-item {
+    border: 1px solid var(--fl-chip-border);
+    border-radius: 7px;
+    padding: 10px 12px;
+    background: var(--fl-chip-bg);
+}
+.link-item.inactive { opacity: 0.55; }
+
+.link-url-row { display: flex; gap: 8px; align-items: center; }
+.link-url-field {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 7px 9px;
+    font-size: 0.82em;
+    font-family: inherit;
+    color: var(--fl-strong);
+    background: var(--fl-input-bg);
+    border: 1px solid var(--fl-input-border);
+    border-radius: 4px;
+    text-overflow: ellipsis;
+}
+.link-url-field:focus { outline: none; border-color: var(--fl-accent); }
+.link-copy-btn {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    background: var(--fl-accent);
+    color: var(--fl-accent-contrast);
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+.link-copy-btn:hover { filter: brightness(1.1); }
+
+.link-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 9px;
+}
+.link-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    font-size: 0.75em;
+    border-radius: 20px;
+    background: var(--fl-input-bg);
+    border: 1px solid var(--fl-chip-border);
+    color: var(--fl-muted);
+    white-space: nowrap;
+}
+.link-badge.badge-lock { color: var(--fl-accent); border-color: var(--fl-accent); }
+.link-badge.badge-off { color: var(--ui-danger); border-color: var(--ui-danger); }
+.link-revoke-btn {
+    margin-left: auto;
+    padding: 4px 12px;
+    background: transparent;
+    color: var(--ui-danger);
+    border: 1px solid var(--ui-danger);
+    border-radius: 4px;
+    font-size: 0.78em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.link-revoke-btn:hover { background: var(--ui-danger); color: #fff; }
+.link-empty { color: var(--fl-muted); font-style: italic; text-align: center; padding: 14px 0; }
+
+/* Single-column create form in the links modal on smaller screens. */
+@media only screen and (max-width: 1100px) {
+    .link-create-grid { grid-template-columns: 1fr; }
+}
+
+/* ===================== Sortable column headers ===================== */
+.fl-table thead th.col-file {
+    position: relative;
+}
+.col-file-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    width: 100%;
+}
+.fl-table thead .sort-btn {
+    cursor: pointer;
+    user-select: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    text-transform: none;
+}
+.fl-table thead .sort-btn:hover { opacity: 1; }
+.fl-table thead .sort-btn.active { opacity: 1; text-decoration: none; }
+.fl-table thead .sort-arrow { font-size: 0.85em; margin-left: 6px; }
+.fl-table thead .meta-sep { opacity: 0.5; margin: 0 4px; }
+.fl-table thead th.col-actions { text-align: right; white-space: nowrap; }
+
+/* ===================== Live search ===================== */
+.search-toggle {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 2px 4px;
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.75;
+    border-radius: 4px;
+    transition: opacity 0.15s, color 0.15s;
+}
+.search-toggle:hover { opacity: 1; }
+.search-toggle.active { opacity: 1; color: var(--fl-accent); }
+
+.search-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 6px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    background: var(--fl-popup-bg);
+    border: 1px solid var(--fl-popup-border);
+    border-radius: 6px;
+    box-shadow: var(--fl-popup-shadow);
+    max-width: calc(100vw - 40px);
+}
+.search-box input {
+    background: var(--fl-input-bg);
+    border: 1px solid var(--fl-input-border);
+    color: var(--fl-strong);
+    border-radius: 4px;
+    padding: 6px 8px;
+    min-width: 0;
+    width: 190px;
+    max-width: 55vw;
+    font-size: 0.9em;
+    outline: none;
+    font-family: inherit;
+}
+.search-box input:focus { border-color: var(--fl-accent); }
+.search-clear {
+    background: var(--fl-chip-bg);
+    border: 1px solid var(--fl-chip-border);
+    color: var(--fl-muted);
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.search-clear:hover { background: var(--ui-danger); border-color: var(--ui-danger); color: #fff; }
+
+/* ===================== Multi-select + bulk actions ===================== */
+.bulk-download-btn {
+    background: var(--fl-accent, #007acc);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-right: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    transition: background 0.15s, filter 0.15s, transform 0.1s;
+    white-space: nowrap;
+}
+.bulk-download-btn:hover { filter: brightness(1.15); }
+.bulk-download-btn:active { transform: scale(0.97); }
+
+.bulk-delete-btn {
+    background: var(--ui-danger);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 12px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    transition: background 0.15s;
+}
+.bulk-delete-btn:hover { background: var(--ui-danger-hover); }
+
+.select-all-wrap,
+.row-select-wrap {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    position: relative;
+}
+.row-select-wrap { margin-left: 8px; }
+
+/* Hide native inputs but keep them accessible for screen readers and tab navigation */
+#selectAll,
+.row-select {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+/* Custom checkbox styling using CSS Variables defined in themes */
+.select-all-wrap .cbx,
+.row-select-wrap .cbx {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--cb-border, #555);
+    background-color: var(--cb-bg, #1a1a1a);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+/* Hover state */
+.select-all-wrap:hover .cbx,
+.row-select-wrap:hover .cbx {
+    border-color: var(--cb-hover-border, #777);
+    background-color: var(--cb-hover-bg, #111);
+}
+
+/* Focus outline for keyboard navigation */
+#selectAll:focus-visible ~ .cbx,
+.row-select:focus-visible ~ .cbx {
+    outline: 2px solid var(--cb-focus-outline, var(--ui-accent));
+    outline-offset: 2px;
+}
+
+/* Checked state */
+#selectAll:checked ~ .cbx,
+.row-select:checked ~ .cbx {
+    background-color: var(--cb-checked-bg, #0d0d0d);
+    border-color: var(--cb-checked-border, #d9534f);
+}
+
+/* Red checkmark design */
+#selectAll:checked ~ .cbx::after,
+.row-select:checked ~ .cbx::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: solid var(--cb-check-color, #ff3333);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+}
+
+/* Highlight a selected row (wins over the theme's row + hover backgrounds). */
+.fl-table tr.row-selected td { background-color: color-mix(in srgb, var(--fl-accent) 16%, transparent); }
+
+/* ===================== Table layout & text truncation ===================== */
+.responsive-table-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+@media only screen and (min-width: 1101px) {
+    .fl-table {
+        table-layout: fixed !important;
+        width: 100% !important;
+        border-collapse: collapse;
+    }
+    .fl-table col.col-file-c {
+        width: auto;
+    }
+    .fl-table col.col-meta-c {
+        width: 220px;
+    }
+    .fl-table col.col-actions-c {
+        width: 270px;
+    }
+    .fl-table th.col-file,
+    .fl-table td.file-cell {
+        width: auto !important;
+        max-width: 0 !important; /* CRITICAL: forces cell to shrink and truncate text */
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        padding-right: 14px !important; /* Cuts more characters from filename for breathing room */
+    }
+    .fl-table th.col-meta,
+    .fl-table td:nth-child(2) {
+        width: 220px !important;
+        max-width: 220px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        font-size: 0.88em !important;
+    }
+    .fl-table th.col-actions,
+    .fl-table td.actions-cell {
+        width: 270px !important;
+        max-width: 270px !important;
+        white-space: nowrap !important;
+        text-align: right !important;
+    }
+    .fl-table td.actions-cell .action-link {
+        margin-left: 4px !important;
+        padding: 4px 7px !important;
+        font-size: 0.78em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+    }
+    .fl-table td.actions-cell .action-link img {
+        width: 13px !important;
+        height: 13px !important;
+        margin-right: 3px !important;
+    }
+    .fl-table td.actions-cell .row-select-wrap {
+        display: inline-flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        margin-left: 6px !important;
+    }
+}
+
+/* File name wrapper: flex layout with ellipsis truncation on long names while keeping extension */
+.file-name-wrap {
+    display: flex !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    vertical-align: middle;
+}
+.file-name-wrap .preview-icon {
+    flex: 0 0 auto !important;
+    margin-right: 6px;
+}
+.file-name-wrap a.file-link {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-decoration: none;
+    vertical-align: middle;
+}
+.file-name-wrap a.file-link:hover {
+    text-decoration: underline;
+}
+.file-name-base {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+.file-name-base b {
+    white-space: nowrap !important;
+}
+.file-name-ext {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+}
+.file-name-ext b {
+    white-space: nowrap !important;
+}
+.file-name-wrap small {
+    flex: 0 0 auto !important;
+    margin-left: 6px;
+    white-space: nowrap !important;
+}
+
+/* ===================== Image preview & Lightbox ===================== */
+.preview-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    margin-right: 6px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.75;
+    transition: opacity 0.15s, transform 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.preview-icon:hover,
+.preview-icon:focus { opacity: 1; outline: none; }
+.preview-icon:active { transform: scale(0.92); }
+
+.preview-popup {
+    position: fixed;
+    z-index: 3000;
+    padding: 6px;
+    background: var(--fl-popup-bg);
+    border: 1px solid var(--fl-popup-border);
+    border-radius: 8px;
+    box-shadow: var(--fl-popup-shadow);
+    pointer-events: auto;
+}
+.preview-popup img {
+    display: block;
+    max-width: 260px;
+    max-height: 260px;
+    border-radius: 4px;
+}
+
+/* Lightbox Modal (for mobile tap / desktop click) */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: lightboxFadeIn 0.15s ease-out;
+}
+.lightbox-overlay[hidden] {
+    display: none !important;
+}
+.lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+.lightbox-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: min(92vw, 620px);
+    max-height: 90vh;
+    background: var(--fl-popup-bg, #1e1e1e);
+    border: 1px solid var(--fl-popup-border, #3c3c3c);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+}
+.lightbox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid var(--fl-popup-border, #3c3c3c);
+    gap: 10px;
+}
+.lightbox-title {
+    font-size: 0.92em;
+    font-weight: 600;
+    color: var(--fl-strong, #fff);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lightbox-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--fl-muted, #a0a0a0);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+}
+.lightbox-close-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+.lightbox-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    overflow: auto;
+    background: #0d0d0d;
+    min-height: 160px;
+}
+.lightbox-body img {
+    display: block;
+    max-width: 100%;
+    max-height: min(65vh, 520px);
+    object-fit: contain;
+    border-radius: 6px;
+}
+.lightbox-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid var(--fl-popup-border, #3c3c3c);
+    gap: 10px;
+}
+.lightbox-dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--fl-accent, #007acc);
+    color: #fff !important;
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: filter 0.15s, transform 0.1s;
+}
+.lightbox-dl-btn:hover {
+    filter: brightness(1.15);
+}
+.lightbox-dl-btn:active {
+    transform: scale(0.97);
+}
+.lightbox-dl-btn img {
+    filter: brightness(0) invert(1);
+}
+.lightbox-dismiss-btn {
+    background: transparent;
+    border: 1px solid var(--fl-popup-border, #3c3c3c);
+    color: var(--fl-muted, #a0a0a0);
+    font-size: 0.85em;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+.lightbox-dismiss-btn:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+@keyframes lightboxFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ===================== Delete confirmation modal ===================== */
+.confirm-file-list {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    max-height: 240px;
+    overflow-y: auto;
+}
+.confirm-file-list li {
+    padding: 7px 10px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    background: rgba(128, 128, 128, 0.14);
+    font-size: 0.9em;
+    word-break: break-all;
+}
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+.confirm-actions .btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    color: inherit;
+    padding: 9px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85em;
+    transition: background 0.15s;
+}
+.confirm-actions .btn-cancel:hover { background: rgba(128, 128, 128, 0.16); }
+.confirm-actions .btn-danger {
+    background: var(--ui-danger);
+    border: none;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85em;
+    transition: background 0.15s;
+}
+.confirm-actions .btn-danger:hover { background: var(--ui-danger-hover); }
+
+/* ============ Mobile (≤1100px): compact layout + file selection ============ */
+@media only screen and (max-width: 1100px) {
+    /* Top row: single column, tight spacing so files get the screen */
+    .dashboard-top { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
+
+    /* Upload card: drop the big cloud, one compact row of controls */
+    .upload-cloud { display: none; }
+    .upload-dropzone {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px 10px;
+        padding: 2px 0 10px;
+    }
+
+    /* Storage: single line (title left, numbers right) + slim usage bar */
+    .storage-gauge { display: none; }
+    .storage-inner { gap: 0; padding: 2px 0; }
+    .storage-info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        width: 100%;
+        gap: 6px 10px;
+        text-align: left;
+    }
+    .storage-title { font-size: 0.85em; }
+    .storage-numbers { margin-top: 0; font-size: 0.85em; }
+    .storage-line-bar {
+        display: block;
+        flex-basis: 100%;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--fl-track);
+        overflow: hidden;
+    }
+    .storage-line-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--fl-accent);
+        box-shadow: 0 0 6px var(--fl-accent);
+    }
+
+    /* File cards: tighter spacing; selection checkbox pinned top-right */
+    .fl-table tbody tr[data-file-id] {
+        position: relative;
+        margin-bottom: 8px !important;
+        padding: 6px 8px !important;
+    }
+    .fl-table tbody td.file-cell { padding-right: 32px !important; }
+    /* The themes set position:relative on every td; force the actions cell
+       static so the absolute checkbox anchors to the card (tr), top-right. */
+    .fl-table tbody td.actions-cell { position: static !important; }
+    .row-select-wrap {
+        position: absolute;
+        top: 8px;
+        right: 12px; /* matches the header bar's 12px right padding so the
+                        select-all + row checkboxes form one aligned column */
+        margin-left: 0;
+        z-index: 2;
+    }
+    .fl-table tbody tr.row-selected { border-color: var(--fl-accent) !important; }
+    .bulk-download-btn { margin-right: 0; padding: 5px 8px; font-size: 0.72em; }
+    .bulk-delete-btn { margin-right: 0; padding: 5px 8px; font-size: 0.72em; }
+    .preview-icon {
+        padding: 5px 6px;
+        margin-right: 6px;
+        opacity: 0.95;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--fl-accent, #007acc);
+    }
+}
+
+/* Fix misalignment and size of custom file picker labels in .form-wrapper */
+.form-wrapper .file-select-btn {
+    display: inline-block;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding: 9px 18px;
+    font-size: 0.9em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Remove bottom border from the last visible file row before #noFilesRow */
+.fl-table tr:last-child td,
+.fl-table tr:nth-last-child(2) td,
+.fl-table tr.last-visible-row td {
+    border-bottom: none !important;
+}
+
+/* Mobile table header: ONE combined bar — File/search/sort on the left,
+   selection controls (DELETE + select-all) on the right of the same bar. */
+@media only screen and (max-width: 1100px) {
+    .fl-table thead {
+        display: block !important;
+        margin-bottom: 8px;
+    }
+    /* The row itself is the styled bar; the th cells sit transparently inside. */
+    .fl-table thead tr {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px !important;
+        background: var(--theme-mobile-header-bg, #252526) !important;
+        color: var(--theme-mobile-header-color, #a0a0a0) !important;
+        border: var(--theme-mobile-header-border, 1px solid #333333) !important;
+        border-radius: 5px !important;
+        box-shadow: var(--theme-mobile-header-shadow, 0 2px 8px rgba(0, 0, 0, 0.3)) !important;
+    }
+    .fl-table thead th.col-file {
+        display: flex !important;
+        align-items: center !important;
+        flex: 1 1 auto;
+        width: auto !important;
+        min-width: 0;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: inherit !important;
+        position: relative !important;
+        gap: 12px;
+    }
+    .fl-table thead th.col-meta { display: none !important; }
+    .fl-table thead th.col-actions {
+        display: flex !important;
+        align-items: center !important;
+        flex: 0 0 auto;
+        margin-left: auto;
+        gap: 8px;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: inherit !important;
+        white-space: nowrap;
+    }
+    /* No owned files -> nothing to select; hide the controls entirely. */
+    .fl-table thead th.col-actions.no-bulk { display: none !important; }
+
+    /* Anchor cell sits inside the padded bar — drop the popup below the bar. */
+    .search-box { margin-top: 14px; }
+}

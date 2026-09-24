@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide — FILEOO.COM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --surface-hover: #252526;
+            --border: #333333;
+            --text: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #007acc;
+            --accent-hover: #008be5;
+            --accent-glow: rgba(0, 122, 204, 0.12);
+            --fl-track: rgba(255, 255, 255, 0.08);
+            --success: #4ec9b0;
+            --error: #f44336;
+            --warning: #ff9800;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, var(--accent-glow) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.01) 0%, transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.65;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 1.5rem;
+            z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .top-bar .page-logo {
+            font-family: "Outfit", sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .top-bar .page-logo span {
+            color: var(--accent);
+        }
+
+        .top-bar .badge {
+            font-family: "Outfit", sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.2rem 0.5rem;
+            border: 1px solid #3c3c3c;
+            border-radius: 999px;
+            background: #252526;
+        }
+
+        .top-bar .spacer {
+            flex: 1;
+        }
+
+        .top-bar .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.45rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .top-bar .back-link:hover {
+            color: var(--accent);
+            background: var(--surface-hover);
+            border-color: #3c3c3c;
+        }
+
+        .top-bar .back-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .menu-toggle:hover {
+            background: var(--surface-hover);
+        }
+
+        .menu-toggle svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* ── Layout ── */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 86px 1.5rem 4rem;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: sticky;
+            top: 86px;
+            align-self: start;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-title {
+            font-family: "Outfit", sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 122, 204, 0.08);
+            color: var(--accent);
+            border-color: rgba(0, 122, 204, 0.25);
+        }
+
+        .nav-item .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.active .num {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+        }
+
+        .progress-wrap {
+            margin-top: 1.25rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .progress-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: "JetBrains Mono", monospace;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #008be5);
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        /* ── Page Area ── */
+        .page-area {
+            min-width: 0;
+        }
+
+        .page {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            padding: 2.25rem 2.5rem;
+            animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Page Content Elements ── */
+        .page-kicker {
+            font-family: "Outfit", sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+
+        .page-title {
+            font-family: "Outfit", sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
+        }
+
+        .page-lead {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+            max-width: 65ch;
+            line-height: 1.6;
+        }
+
+        .page h3 {
+            font-family: "Outfit", sans-serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.4rem;
+        }
+
+        .page h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .page h4 {
+            font-family: "Outfit", sans-serif;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page p {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .page p strong {
+            color: #fff;
+        }
+
+        .page ul,
+        .page ol {
+            margin: 0.5rem 0 1.25rem 1.25rem;
+            color: var(--text);
+        }
+
+        .page li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .page li::marker {
+            color: var(--accent);
+        }
+
+        .page li strong {
+            color: #fff;
+        }
+
+        .page code {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.85em;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        /* ── Callout Box ── */
+        .callout {
+            display: flex;
+            gap: 0.95rem;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin: 1.25rem 0;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            background: #252526;
+            border: 1px solid #3c3c3c;
+        }
+
+        .callout-icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .callout-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .callout-tip {
+            border-left: 3px solid var(--accent);
+            color: var(--text);
+        }
+
+        .callout-tip .callout-icon {
+            color: var(--accent);
+        }
+
+        .callout-note {
+            border-left: 3px solid var(--success);
+            color: var(--text);
+        }
+
+        .callout-note .callout-icon {
+            color: var(--success);
+        }
+
+        .callout-warn {
+            border-left: 3px solid var(--warning);
+            color: var(--text);
+        }
+
+        .callout-warn .callout-icon {
+            color: var(--warning);
+        }
+
+        .callout strong {
+            color: #fff;
+        }
+
+        /* ── Feature Cards Grid ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0 2rem;
+        }
+
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .card .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: rgba(0, 122, 204, 0.08);
+            border: 1px solid rgba(0, 122, 204, 0.2);
+            border-radius: 4px;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .card .card-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .card h4 {
+            font-family: "Outfit", sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+            margin: 0 0 0.4rem;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        /* ── Steps List ── */
+        .steps {
+            list-style: none;
+            counter-reset: step;
+            margin: 1rem 0 1.5rem !important;
+            padding: 0 !important;
+        }
+
+        .steps li {
+            counter-increment: step;
+            position: relative;
+            padding: 0.8rem 0 0.8rem 2.8rem;
+            border-bottom: 1px dashed var(--border);
+            margin: 0;
+            font-size: 0.92rem;
+            color: var(--text);
+        }
+
+        .steps li:last-child {
+            border-bottom: none;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0.65rem;
+            width: 24px;
+            height: 24px;
+            background: var(--bg);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* ── UI Badges/Chips ── */
+        .ui-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: "Outfit", sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.18rem 0.55rem;
+            border-radius: 4px;
+            background: var(--accent);
+            color: #ffffff;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ui-chip.alt {
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            color: var(--text);
+        }
+
+        .ui-chip.ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 500;
+        }
+
+        /* ── Storage Meter Diagram ── */
+        .interactive-diagram {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .diagram-gauge {
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+
+        .diagram-gauge svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .diagram-gauge .track {
+            stroke: var(--fl-track);
+            stroke-width: 18;
+            fill: none;
+            stroke-linecap: round;
+            stroke-dasharray: 376.99 125.66;
+        }
+
+        .diagram-gauge .fill {
+            stroke: var(--accent);
+            stroke-width: 18;
+            fill: none;
+            stroke-linecap: round;
+            stroke-dasharray: 282.74 220;
+            /* 75% used of 376.99 length */
+            filter: drop-shadow(0 0 4px var(--accent));
+            animation: dash 1.5s ease-out forwards;
+        }
+
+        @keyframes dash {
+            from {
+                stroke-dasharray: 0 502.65;
+            }
+
+            to {
+                stroke-dasharray: 282.74 220;
+            }
+        }
+
+        .diagram-gauge .diagram-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: "Outfit", sans-serif;
+            text-align: center;
+        }
+
+        .diagram-gauge .percent {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+
+        .diagram-gauge .subtext {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ── Tables ── */
+        .properties-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.9rem;
+        }
+
+        .properties-table th,
+        .properties-table td {
+            padding: 0.75rem 0.95rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .properties-table th {
+            background: #252526;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .properties-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .properties-table td strong {
+            color: var(--accent);
+        }
+
+        /* ── Page Footer ── */
+        .page-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem 2rem;
+            min-width: 110px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            line-height: 1.2;
+            transition: all 0.2s ease;
+        }
+
+        .page-nav-btn:hover:not(:disabled) {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-nav-btn.next {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+        }
+
+        .page-nav-btn.next:hover {
+            background: #008be5;
+            color: #ffffff;
+            border-color: #008be5;
+        }
+
+        .page-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-counter {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .kbd {
+            font-family: "JetBrains Mono", monospace;
+            background: #252526;
+            color: #fff;
+            border: 1px solid #3c3c3c;
+            border-bottom: 2px solid #000;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.78rem;
+        }
+
+        /* ── Responsive adjustments ── */
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding-top: 76px;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: -300px;
+                bottom: 0;
+                width: 280px;
+                z-index: 99;
+                border-radius: 0;
+                border-top: none;
+                border-bottom: none;
+                border-right: 1px solid var(--border);
+                transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .page {
+                padding: 1.75rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top bar -->
+    <header class="top-bar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+        </button>
+        <a href="https://fileoo.com" class="page-logo"><span>FILEOO</span>.COM</a>
+        <div class="spacer"></div>
+        <a href="https://fileoo.com" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Dashboard
+        </a>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="layout">
+
+        <!-- Sticky Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-title">Help Sections</div>
+            <nav>
+                <ul class="nav-list">
+                    <li>
+                        <button class="nav-item active" data-page="welcome">
+                            <span class="num">01</span>
+                            Overview
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-page="getting-started">
+                            <span class="num">02</span>
+                            Getting Started
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-page="uploads">
+                            <span class="num">03</span>
+                            Uploads &amp; Quota
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-page="organization">
+                            <span class="num">04</span>
+                            Table Actions
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-page="sharing">
+                            <span class="num">05</span>
+                            Sharing &amp; Security
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-page="faqs">
+                            <span class="num">06</span>
+                            FAQs &amp; Settings
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="progress-wrap">
+                <div class="progress-label">
+                    <span>Guide Progress</span>
+                    <span id="progressText">1 / 6</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 16.66%;"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="page-area">
+
+            <!-- Section 1: Welcome & Overview -->
+            <section class="page active" id="page-welcome">
+                <div class="page-kicker">Welcome to Fileoo</div>
+                <h2 class="page-title">Overview &amp; Architecture</h2>
+                <p class="page-lead">
+                    FILEOO.COM is a multi-themed, cryptographically secure cloud storage and file-sharing ecosystem.
+                    Designed for private repositories and webmasters, it pairs high-performance storage virtualization
+                    with access controls.
+                </p>
+
+                <h3>Core Features</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                            </svg>
+                        </div>
+                        <h4>Secured Uploads</h4>
+                        <p>Files up to 150MB are sanitized, uniquely tokenized, and stored completely outside the public
+                            web root directory.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+                        <h4>Cryptographic Links</h4>
+                        <p>Create public links protected by unguessable 48-char hex tokens, user-configured passcodes,
+                            and download limits.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h4>Internal Collaboration</h4>
+                        <p>Share items instantly with other platform users by searching their accounts or emails. Easily
+                            retract sharing parameters.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            </svg>
+                        </div>
+                        <h4>Multi-Theme Core</h4>
+                        <p>Inject styling matrices to adjust your storage environment between dark cyberpunk (Matrix),
+                            classic dark, and pink themes.</p>
+                    </div>
+                </div>
+
+                <h3>Security Under the Hood</h3>
+                <p>
+                    FILEOO utilizes a dual-layer security posture:
+                </p>
+                <ul>
+                    <li><strong>Protected Storage Structure:</strong> Uploaded files live in an isolated directory (e.g.
+                        <code>../fileoo_uploads/</code>) guarded by a strict local <code>.htaccess</code> policy denying
+                        direct URL request mapping.
+                    </li>
+                    <li><strong>Permission-Gated Router:</strong> All file streams are dynamically resolved by
+                        <code>download.php</code>. It evaluates session tokens, owner permissions, active expiration
+                        hashes, and passcode variables before delivering binary data.
+                    </li>
+                    <li><strong>Host Header Poisoning Defense:</strong> All password reset emails and public share links
+                        are strictly anchored to an authoritative canonical base URL (<code>APP_URL</code>), eliminating
+                        HTTP Host Header injection and token exfiltration vectors.
+                    </li>
+                    <li><strong>Decompression Bomb Protection:</strong> Uploaded raster images undergo a pre-decoding
+                        dimension check (capped at 50 Megapixels) before generating thumbnails, preventing memory
+                        exhaustion and Denial of Service (DoS) attacks.
+                    </li>
+                    <li><strong>No Scripting Execution:</strong> SVG files are filtered and client-supplied scriptable
+                        extensions are prohibited. High-security HTTP headers like
+                        <code>X-Content-Type-Options: nosniff</code> prevent browser-level MIME sniffing.
+                    </li>
+                </ul>
+
+                <div class="callout callout-tip">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M9 18h6" />
+                            <path d="M10 22h4" />
+                            <path
+                                d="M12 2a7 7 0 0 0-4 12.7c.7.7 1 1.6 1 2.6V18h6v-.7c0-1 .3-1.9 1-2.6A7 7 0 0 0 12 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Pro-Tip:</strong> The active user session utilizes hardened HTTP-only cookies and
+                        cryptographic Cross-Site Request Forgery (CSRF) tokens on all database-mutating requests.
+                    </div>
+                </div>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" disabled>Previous</button>
+                    <span class="page-counter">1 of 6</span>
+                    <button class="page-nav-btn next" data-go="getting-started">Next</button>
+                </div>
+            </section>
+
+            <!-- Section 2: Getting Started -->
+            <section class="page" id="page-getting-started">
+                <div class="page-kicker">Setup &amp; Configurations</div>
+                <h2 class="page-title">Getting Started</h2>
+                <p class="page-lead">
+                    Before uploading files, you must configure your account preferences and align your authentication
+                    modules. Let's look at setting up and managing your workspace.
+                </p>
+
+                <h3>Authentication &amp; Safeguards</h3>
+                <p>
+                    FILEOO utilizes a centralized account schema to ensure that your private directory is walled off:
+                </p>
+                <div class="steps">
+                    <ul>
+                        <li>
+                            <strong>Account Registration &amp; Login:</strong> Sign up with a unique username and email.
+                            The system validates entries and stores credentials using secure password hashing
+                            techniques.
+                        </li>
+                        <li>
+                            <strong>Cloudflare Turnstile Capture:</strong> A Cloudflare Turnstile captcha gate guards
+                            key authentication forms to prevent automated credential attacks.
+                        </li>
+                        <li>
+                            <strong>Login Rate-Limiting:</strong> To block brute-forcing, failed login attempts are
+                            written to a temporary <code>login_attempts</code> table with client IP checking. If an IP
+                            exceeds threshold rules, authentication requests are throttled.
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Account Management</h3>
+                <p>
+                    Clicking on your profile on the left sidebar overlay gives you access to configuration modals:
+                </p>
+                <table class="properties-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Description</th>
+                            <th>Validation Requirements</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Change Username</strong></td>
+                            <td>Edits username and updates session states. Optionally updates your email.</td>
+                            <td>Max 50 characters, letters, numbers, and underscores only. Must be unique.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Change Password</strong></td>
+                            <td>Updates the active account's password hash in the database.</td>
+                            <td>At least 10 characters. Must contain 1 uppercase letter, 1 lowercase letter, and 1
+                                number.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delete Account</strong></td>
+                            <td>Triggers a cascading deletion across all file shares, uploads, and data tables.</td>
+                            <td>Requires checking a warning and confirmation. Removes physical files and thumb caches.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-note">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="16" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Password Recovery:</strong> The forgot password gateway uses <code>forgot.php</code> and
+                        <code>reset.php</code>. It relies on a socket-based SMTP client script,
+                        <code>send_mail_smtp()</code>, which connects directly to Mail servers without external
+                        dependencies.
+                    </div>
+                </div>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" data-go="welcome">Previous</button>
+                    <span class="page-counter">2 of 6</span>
+                    <button class="page-nav-btn next" data-go="uploads">Next</button>
+                </div>
+            </section>
+
+            <!-- Section 3: Uploads & Quota -->
+            <section class="page" id="page-uploads">
+                <div class="page-kicker">Data Ingestion</div>
+                <h2 class="page-title">File Uploads &amp; Quota</h2>
+                <p class="page-lead">
+                    FILEOO handles files via drag-and-drop actions, monitors physical allocations, and generates
+                    thumbnails on demand.
+                </p>
+
+                <h3>Uploading Files</h3>
+                <p>
+                    On the main dashboard card, you can choose local files or drag them directly onto the upload zone:
+                </p>
+                <ul>
+                    <li><strong>Max Upload Limit:</strong> Individual files are limited to <code>150 MB</code> (aligned
+                        to PHP limits).</li>
+                    <li><strong>Upload Progress:</strong> Once initiated, the upload button transitions into a real-time
+                        progress bar.</li>
+                    <li><strong>Allowed Formats:</strong> The whitelist allows standard document formats
+                        (<code>pdf</code>, <code>docx</code>, <code>xlsx</code>), images (<code>jpg</code>,
+                        <code>png</code>, <code>webp</code>, <code>gif</code>), audio/video (<code>mp3</code>,
+                        <code>mp4</code>, <code>mkv</code>), archives (<code>zip</code>, <code>7z</code>,
+                        <code>tar.gz</code>), and plain data text files (<code>json</code>, <code>csv</code>,
+                        <code>md</code>).
+                    </li>
+                </ul>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Blocked Formats:</strong> SVG files (<code>.svg</code>) are strictly prohibited because
+                        they can execute vector-based XML scripts inside the browser context, which poses security
+                        risks.
+                    </div>
+                </div>
+
+                <h3>Storage Quota &amp; Ring Gauge</h3>
+                <p>
+                    Every user has an assigned storage quota (default: <code>1000 MB</code>), which can be adjusted
+                    per-user in the database. Space is computed continuously:
+                </p>
+
+                <div class="interactive-diagram">
+                    <div class="diagram-gauge">
+                        <svg viewBox="0 0 200 200">
+                            <!-- Track -->
+                            <circle class="track" cx="100" cy="100" r="80" transform="rotate(135 100 100)" />
+                            <!-- Fill -->
+                            <circle class="fill" cx="100" cy="100" r="80" transform="rotate(135 100 100)" />
+                        </svg>
+                        <div class="diagram-label">
+                            <div class="percent">75%</div>
+                            <div class="subtext">Used</div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul>
+                    <li><strong>Allocation Principle:</strong> Only files you <i>own</i> count against your storage
+                        quota. Files shared <i>with you</i> count against their original owner's quota.</li>
+                    <li><strong>Ring Gauge Design:</strong> Desktop displays show a 270° circular open-bottom gauge.
+                        Mobile devices compress this into a horizontal storage bar to fit smaller viewports.</li>
+                    <li><strong>Busting Uploads:</strong> If a batch upload exceeds the remaining quota, the transaction
+                        halts and displays a detailed remaining balance error.</li>
+                </ul>
+
+                <h3>Visual Previews &amp; Thumbnails</h3>
+                <p>
+                    When raster images (JPEG, PNG, GIF, BMP, WEBP) are uploaded, the server uses PHP's GD library to
+                    automatically generate a 400px downscaled thumbnail. These thumbnails are kept in the protected
+                    folder and are loaded on-hover in the files list.
+                </p>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" data-go="getting-started">Previous</button>
+                    <span class="page-counter">3 of 6</span>
+                    <button class="page-nav-btn next" data-go="organization">Next</button>
+                </div>
+            </section>
+
+            <!-- Section 4: Organizing & Table Actions -->
+            <section class="page" id="page-organization">
+                <div class="page-kicker">Interactive Management</div>
+                <h2 class="page-title">Table Actions &amp; Organization</h2>
+                <p class="page-lead">
+                    Manage files through search, column sorting, inline image previews, and bulk selection tools.
+                </p>
+
+                <h3>File Table Layout</h3>
+                <p>
+                    The main dashboard displays files using an interactive, responsive grid list:
+                </p>
+                <ul>
+                    <li><strong>Sortable Columns:</strong> Clicking column header buttons filters files by
+                        <strong>Name</strong>, <strong>File Size</strong>, or <strong>Upload Date</strong>. Sort
+                        directions alternate on click.
+                    </li>
+                    <li><strong>Search Filter:</strong> Clicking the magnifying glass icon displays a search box to
+                        filter files in real-time by keyword as you type.</li>
+                    <li><strong>Adaptive Middle Truncation:</strong> Long filenames automatically truncate with an
+                        ellipsis while keeping the file extension visible at the end (e.g.,
+                        <code>Quarterly_Report_Financials....pdf</code>) so you can always identify the file format.
+                        Hovering or focusing on the link displays the full original filename.</li>
+                    <li><strong>Shared File Badges:</strong> If another user shared a file with you, it will display a
+                        grey badge with the owner's username next to the filename.</li>
+                </ul>
+
+                <h3>Image Previews &amp; Mobile Lightbox</h3>
+                <p>
+                    Image files display a preview icon in the file list:
+                </p>
+                <ul>
+                    <li><strong>Desktop Hover Tooltip:</strong> Hovering with a mouse displays a floating thumbnail preview card next to the icon.</li>
+                    <li><strong>Touch &amp; Mobile Lightbox Modal:</strong> Tapping or clicking the preview icon opens a centered fullscreen Lightbox Modal featuring a crisp high-res preview, filename, and a direct download button. Tap anywhere outside or click <code>&times;</code> (or press <kbd>Esc</kbd>) to dismiss.</li>
+                </ul>
+
+                <h3>Bulk Selection, ZIP Download &amp; Deletion</h3>
+                <p>
+                    If you own multiple files, you can select and manage them in batch:
+                </p>
+                <div class="steps">
+                    <ol>
+                        <li>
+                            <strong>Select All Checkbox:</strong> Click the main checkbox in the header row to select
+                            all files in your repository.
+                        </li>
+                        <li>
+                            <strong>Individual Selection:</strong> Use the row checkboxes on the right to select
+                            specific files. Checkboxes only appear on files you own.
+                        </li>
+                        <li>
+                            <strong>Batch ZIP Download:</strong> Selecting 2 or more files reveals a blue
+                            <code>DOWNLOAD (N)</code> button in the header. Clicking this dynamically compiles all
+                            selected files into a single <code>fileoo_files_YYYY-MM-DD-HH(AM/PM)-MM.zip</code> archive
+                            (up to 200 MB / 50 files per batch) with automated duplicate filename collision handling.
+                        </li>
+                        <li>
+                            <strong>Batch Delete Button:</strong> A red <code>DELETE (N)</code> button also slides into
+                            view. Clicking this opens a confirmation modal detailing the items queued for permanent deletion.
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="callout callout-tip">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Real-time File Check:</strong> Double clicking an item or clicking the filename launches
+                        the download helper. The system checks permissions and redirects to secure viewer layers for
+                        images and audio files.
+                    </div>
+                </div>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" data-go="uploads">Previous</button>
+                    <span class="page-counter">4 of 6</span>
+                    <button class="page-nav-btn next" data-go="sharing">Next</button>
+                </div>
+            </section>
+
+            <!-- Section 5: Sharing & Security -->
+            <section class="page" id="page-sharing">
+                <div class="page-kicker">Access Management</div>
+                <h2 class="page-title">Sharing &amp; Public Links</h2>
+                <p class="page-lead">
+                    FILEOO provides two distinct file-sharing modes: secure internal sharing with other registered
+                    users, and custom public download links.
+                </p>
+
+                <h3>1. Internal User Sharing</h3>
+                <p>
+                    Click the <span class="ui-chip ghost">SHARE</span> button on any file row to share it with another
+                    platform user:
+                </p>
+                <ul>
+                    <li><strong>Share Target:</strong> Enter the target user's username or email. The server verifies
+                        the recipient exists before updating permissions.</li>
+                    <li><strong>Rights Retraction:</strong> File owners can view active shares in the share modal and
+                        click a revoke action to remove access instantly.</li>
+                    <li><strong>Unshare Self:</strong> If a file is shared with you, click <span
+                            class="ui-chip ghost">UNSHARE</span> on your row to remove yourself from the share list.
+                    </li>
+                </ul>
+
+                <h3>2. Custom Public Links</h3>
+                <p>
+                    Click the <span class="ui-chip">LINK</span> action button to configure a temporary public download
+                    URL. The modal allows you to configure several security limits:
+                </p>
+                <table class="properties-table">
+                    <thead>
+                        <tr>
+                            <th>Security Limit</th>
+                            <th>Options</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Expiration Range</strong></td>
+                            <td><code>1h</code>, <code>1d</code>, <code>7d</code>, <code>30d</code>, <code>1y</code>, or
+                                <code>Never</code>
+                            </td>
+                            <td>Sets an expiration date/time after which the link returns a 410 Gone error.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Download limit</strong></td>
+                            <td><code>1</code>, <code>5</code>, <code>20</code>, <code>100</code>, or
+                                <code>Unlimited</code>
+                            </td>
+                            <td>Max download count limit. The link is automatically disabled when the limit is reached.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Passcode</strong></td>
+                            <td>Custom string input (Min 4 chars)</td>
+                            <td>Requires visitors to enter a passcode to download the file. The passcode is stored
+                                securely as a hash.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>The Passcode Gate Guard</h3>
+                <p>
+                    When a public link has passcode protection enabled, visitors are prompted to enter the passcode to
+                    download the file:
+                </p>
+                <ul>
+                    <li><strong>Brute-Force Prevention:</strong> The server prompts for the passcode and validates it
+                        using <code>password_verify()</code> via POST.</li>
+                    <li><strong>Bot Protection:</strong> Link-scraping bots and search engine crawlers cannot bypass the
+                        passcode prompt, which prevents them from consuming the download limit.</li>
+                </ul>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" data-go="organization">Previous</button>
+                    <span class="page-counter">5 of 6</span>
+                    <button class="page-nav-btn next" data-go="faqs">Next</button>
+                </div>
+            </section>
+
+            <!-- Section 6: FAQs & Admin Tools -->
+            <section class="page" id="page-faqs">
+                <div class="page-kicker">Knowledge Base</div>
+                <h2 class="page-title">FAQs &amp; Settings</h2>
+                <p class="page-lead">
+                    Answers to common questions, platform settings, and details about administrative tools.
+                </p>
+
+                <h3>Custom Themes</h3>
+                <p>
+                    FILEOO supports multiple user interface themes. Change your theme from the dropdown selector at the
+                    bottom of the left sidebar:
+                </p>
+                <ul>
+                    <li><strong>Matrix (Default):</strong> A green-and-cyan cyberpunk theme featuring a matrix code fall
+                        canvas background.</li>
+                    <li><strong>style_Dark.css:</strong> A classic dark-slate theme with clean lines.</li>
+                    <li><strong>style_Pink.css:</strong> A high-contrast magenta and pink neon theme.</li>
+                </ul>
+                <p>
+                    Theme selections are saved to the database (<code>users.selected_css</code>) and persist across
+                    sessions.
+                </p>
+
+                <h3>Frequently Asked Questions</h3>
+                <table class="properties-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Resolution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Why is my upload failing with a size error?</strong></td>
+                            <td>Files must be under 150MB. Make sure the file size does not exceed the limit or your
+                                remaining storage quota.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>How are long filenames handled in the dashboard?</strong></td>
+                            <td>Long filenames use adaptive middle truncation so that the beginning of the title and the
+                                file extension (e.g. <code>.pdf</code>, <code>.docx</code>) remain visible at all times.
+                                Hovering over any truncated filename reveals the complete name.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>How are image uploads protected against memory DoS?</strong></td>
+                            <td>FILEOO reads image dimensions via header metadata prior to decoding. Images exceeding 50
+                                Megapixels are rejected for thumbnail generation to protect server memory against
+                                decompression bombs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Can I upload script files like SVG or PHP?</strong></td>
+                            <td>No. SVG and scripting formats are blocked to prevent cross-site scripting (XSS) and
+                                server-side code execution.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>What happens to my shares when I delete a file?</strong></td>
+                            <td>Deleting a file automatically deletes all associated public links and internal shares in
+                                the database.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>How do I recover a deleted file?</strong></td>
+                            <td>File deletions are permanent. Files are immediately deleted from disk and cannot be
+                                recovered.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>OPcache Reset Tool</h3>
+                <p>
+                    Administrators can use the OPcache reset tool:
+                </p>
+                <ul>
+                    <li><strong>File Location:</strong> <code>clear_cache.php</code></li>
+                    <li><strong>Functionality:</strong> Runs <code>opcache_reset()</code> on the server to clear cached
+                        PHP code in memory, forcing the server to load updated files.</li>
+                </ul>
+
+                <div class="page-footer">
+                    <button class="page-nav-btn" data-go="sharing">Previous</button>
+                    <span class="page-counter">6 of 6</span>
+                    <a href="https://fileoo.com" class="page-nav-btn next">Dashboard</a>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Script Navigation -->
+    <script>
+        const pages = ["welcome", "getting-started", "uploads", "organization", "sharing", "faqs"];
+        const navItems = document.querySelectorAll(".nav-item");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+        const sidebar = document.getElementById("sidebar");
+        const menuToggle = document.getElementById("menuToggle");
+
+        function showPage(pageId) {
+            const idx = pages.indexOf(pageId);
+            if (idx === -1) return;
+
+            // Update page display
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+            const target = document.getElementById("page-" + pageId);
+            if (target) target.classList.add("active");
+
+            // Update sidebar buttons
+            navItems.forEach(n => {
+                const btnPage = n.getAttribute("data-page");
+                n.classList.toggle("active", btnPage === pageId);
+            });
+
+            // Update progress bar
+            const pct = ((idx + 1) / pages.length) * 100;
+            progressFill.style.width = pct + "%";
+            progressText.textContent = (idx + 1) + " / " + pages.length;
+
+            // Hash redirect & scroll
+            history.replaceState(null, "", "#" + pageId);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            // Close responsive menu
+            if (window.innerWidth <= 900) sidebar.classList.remove("open");
+        }
+
+        // Event Listeners
+        navItems.forEach(item => {
+            item.addEventListener("click", () => {
+                const pageId = item.getAttribute("data-page");
+                showPage(pageId);
+            });
+        });
+
+        document.querySelectorAll("[data-go]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                showPage(btn.getAttribute("data-go"));
+            });
+        });
+
+        menuToggle?.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+        });
+
+        // Initialize Page
+        const initial = window.location.hash.replace("#", "");
+        if (initial && pages.includes(initial)) {
+            showPage(initial);
+        } else {
+            showPage("welcome");
+        }
+
+        // Arrow Key Keyboard Shortcuts
+        document.addEventListener("keydown", (e) => {
+            if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) return;
+
+            const activePage = document.querySelector(".page.active");
+            if (!activePage) return;
+            const currentId = activePage.id.replace("page-", "");
+            const currentIdx = pages.indexOf(currentId);
+
+            if (e.key === "ArrowRight" && currentIdx < pages.length - 1) {
+                showPage(pages[currentIdx + 1]);
+            } else if (e.key === "ArrowLeft" && currentIdx > 0) {
+                showPage(pages[currentIdx - 1]);
+            }
+        });
+    </script>
+</body>
+
+</html>
